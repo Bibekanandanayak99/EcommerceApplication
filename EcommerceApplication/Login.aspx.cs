@@ -43,27 +43,36 @@ namespace EcommerceApplication
             String Role = "User";
             Session["UserID"] = Email;
 
-            if (NewPassword.Equals(confirmPassword))
+            String q6 = " exec ExistUser '" + Email + "' ";
+            SqlCommand cmd = new SqlCommand(q6, conn);
+            SqlDataReader reader = cmd.ExecuteReader();
+            if (reader.HasRows)
             {
+                Response.Write("<script>alert('This EmailID is already in our Database please login.')</script>");
+            }
+            else
+            {
+                if (NewPassword.Equals(confirmPassword))
+                {
 
-                String q1 = "exec newAccount '" + Name + "', '" + Email + "','"+ mobileNo + "', '" + confirmPassword + "', '"+ profile + "' , '" + Role + "','" + status + "' ";
-                SqlCommand cmd = new SqlCommand(q1, conn);
-                cmd.ExecuteNonQuery();
-                clear();
+                    String q1 = "exec newAccount '" + Name + "', '" + Email + "','" + mobileNo + "', '" + confirmPassword + "', '" + profile + "' , '" + Role + "','" + status + "' ";
+                    SqlCommand cmd2 = new SqlCommand(q1, conn);
+                    cmd2.ExecuteNonQuery();
+                    clear();
 
 
-                Response.Write("<script>alert('Regristration successfull')</script>");
+                    Response.Write("<script>alert('Regristration successfull')</script>");
 
-                MailMessage mail = new MailMessage();
-                mail.From = new MailAddress("badalnayak10@gmail.com");
-                mail.To.Add(Email);
-                mail.Subject = "Registration Successful - Welcome to Bhoomika";
-                mail.Body = $@"
+                    MailMessage mail = new MailMessage();
+                    mail.From = new MailAddress("badalnayak10@gmail.com");
+                    mail.To.Add(Email);
+                    mail.Subject = "Registration Successful - Welcome to Bhoomika";
+                    mail.Body = $@"
                 <div style='font-family: Mukta, sans-serif;'>
                     <nav class='navbar navbar-expand-lg navbar-dark bg-dark' style='padding: 10px; background-color: #333;'>
                         <a class='navbar-brand' href='#' style='font-size: 1.8rem; color: #ffdf00; text-decoration: none;'>
                             भूमिka
-                            <span class='tagline' style='font-size: 1.2rem; color: #ffdf00;'>create a woman</span>
+                            <span class='tagline' style='font-size: 1.2rem; color: #ffdf00;'>creates a woman</span>
                         </a>
                     </nav>
 
@@ -91,36 +100,41 @@ namespace EcommerceApplication
                     }}
                 </style>";
 
-                mail.IsBodyHtml = true;
+                    mail.IsBodyHtml = true;
 
 
-                SmtpClient mailClient = new SmtpClient("smtp.gmail.com");
-                mailClient.Port = 587;
-                mailClient.Credentials = new NetworkCredential("badalnayak10@gmail.com", "fqpwvymsfurbkqxg");
-                mailClient.EnableSsl = true;
+                    SmtpClient mailClient = new SmtpClient("smtp.gmail.com");
+                    mailClient.Port = 587;
+                    mailClient.Credentials = new NetworkCredential("badalnayak10@gmail.com", "fqpwvymsfurbkqxg");
+                    mailClient.EnableSsl = true;
 
-                try
-                {
-                    mailClient.Send(mail);
-                    Response.Write("<script>alert('A confirmation mail is sent to your Registered Email.')</script>");
+                    try
+                    {
+                        mailClient.Send(mail);
+                        Response.Write("<script>alert('A confirmation mail is sent to your Registered Email.')</script>");
+
+                    }
+                    catch (Exception ex)
+                    {
+
+                        Response.Write($"<script>alert('Error sending email: {ex.Message}')</script>");
+
+
+
+                    }
 
                 }
-                catch (Exception ex)
+
+                else
                 {
-
-                    Response.Write($"<script>alert('Error sending email: {ex.Message}')</script>");
-
-
+                    Response.Write("<script>alert('Regristration failded, Tray again.')</script>");
 
                 }
 
             }
 
-            else
-            {
-                Response.Write("<script>alert('Regristration failded, Tray again.')</script>");
 
-            }
+            
 
         }
 
@@ -148,8 +162,7 @@ namespace EcommerceApplication
                         }
                         else
                         {
-                            Response.Write("<script>alert('Your account is Temporarly blocked by Admin.')</script>");
-
+                            Response.Write("<script>alert('Incorrect EmailID or Password.')</script>");
 
                         }
 
@@ -165,11 +178,15 @@ namespace EcommerceApplication
                         }
                         else
                         {
-                            Response.Write("<script>alert('Your account is Temporarly blocked by Admin.')</script>");
+                            Response.Write("<script>alert('Your Account is Temporary blocked');</script>");
 
 
                         }
 
+                    }
+                    else
+                    {
+                        Response.Write("<script>alert('Incorrect EmailID or Password.');</script>");
                     }
                 }
             }
@@ -263,7 +280,7 @@ namespace EcommerceApplication
             }
             else
             {
-                reader.Close(); // Ensure reader is closed if no data is found
+                reader.Close();
                 Response.Write("<script>alert('No user found with the provided email.')</script>");
             }
         }
@@ -279,7 +296,7 @@ namespace EcommerceApplication
                 {
 
                     Response.Write("<script>alert('OTP verification successfull.')</script>");
-                    //UpdateUserPassword();
+                    
                 }
                 else
                 {
@@ -314,7 +331,7 @@ namespace EcommerceApplication
 
                 if (updateSuccessful)
                 {
-                    Response.Write("<script>alert('Password updated successfully.')");
+                    Response.Write("<script>alert('Password updated successfully.')</script>");
 
                 }
                 else

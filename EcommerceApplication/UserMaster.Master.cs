@@ -22,12 +22,17 @@ namespace EcommerceApplication
             connection = new SqlConnection(cnf);
             connection.Open();
 
-            if(Session["EmailID"] == null)
+            if (!IsPostBack)
+            {
+                BindProfileImage();
+            }
+
+            if (Session["EmailID"] == null)
             {
                 Response.Redirect("Login.aspx");
             }
 
-            String q1 = "Select UserNmae from BhoomikaAccounts where UserEmail = @Email ";
+            String q1 = "Select UserNmae, UserPhoto from BhoomikaAccounts where UserEmail = @Email ";
             SqlCommand cmd = new SqlCommand(q1, connection);
             cmd.Parameters.AddWithValue("@Email", Session["EmailID"]);
             SqlDataReader r = cmd.ExecuteReader();
@@ -35,6 +40,9 @@ namespace EcommerceApplication
             if (r.Read())
             {
                 Label1.Text = r["UserNmae"].ToString();
+
+                
+
             }
             else
             {
@@ -48,6 +56,34 @@ namespace EcommerceApplication
             }
 
 
+        }
+
+        private void BindProfileImage()
+        {
+            // Assuming you have already set up the database connection
+            string query = "SELECT UserPhoto FROM BhoomikaAccounts WHERE UserEmail = @Email";
+            SqlCommand cmd = new SqlCommand(query, connection);
+            cmd.Parameters.AddWithValue("@Email", Session["EmailID"]);
+
+            SqlDataReader reader = cmd.ExecuteReader();
+
+            if (reader.Read())
+            {
+                // Fetch the image path from the database
+                string userPhoto = reader["UserPhoto"].ToString();
+
+                // Check if the user has a profile picture, otherwise set a default image
+                if (!string.IsNullOrEmpty(userPhoto))
+                {
+                    ProfileImage.ImageUrl = "~/Profile/" + userPhoto;  // Adjust path if needed
+                }
+                else
+                {
+                    ProfileImage.ImageUrl = "~/Profile/default.png";  // Default image if no profile picture
+                }
+            }
+
+            reader.Close();
         }
 
         protected void LogoutButton_Click(object sender, EventArgs e)

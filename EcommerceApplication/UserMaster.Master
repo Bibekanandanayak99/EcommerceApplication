@@ -51,12 +51,13 @@
                                 <ul class="navbar-nav">
                                 <li class="nav-item dropdown">
                                 <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                <asp:Image ID="ProfileImage"  runat="server" CssClass="rounded-circle" style="width: 40px; height: 40px;"  />
+                                <asp:Image ID="ProfileImage" runat="server" CssClass="rounded-circle" style="width: 40px; height: 40px;" />
                                 Hello, <asp:Label ID="Label1" runat="server" Text="Label"></asp:Label>
                                 </a>
                                 <div class="dropdown-menu" aria-labelledby="navbarDropdown">
                                 <button type="button" class="dropdown-item" data-toggle="modal" data-target="#updateProfileModal">
-                                 Update Profile</button>                         
+                                 Update Profile</button> 
+                                <a href="DeleteUser.aspx" class="dropdown-item" >Delete Account</a>
                                 <asp:Button class="dropdown-item" ID="LogoutButton" runat="server" Text="Logout" OnClick="LogoutButton_Click" />
                                 </div>
                                 </li>
